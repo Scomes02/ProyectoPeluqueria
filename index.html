@@ -68,12 +68,12 @@
 
         function getFormattedDate() {
             const d = new Date();
-            return `${d.getDate().toString().padStart(2, '0')}-${(d.getMonth()+1).toString().padStart(2, '0')}-${d.getFullYear()}`;
+            return `${d.getDate().toString().padStart(2, '0')}-${(d.getMonth() + 1).toString().padStart(2, '0')}-${d.getFullYear()}`;
         }
 
         function exportarHistorialTXT() {
             const contenido = document.getElementById('resumenFinal').innerText;
-            const blob = new Blob([contenido], {type: 'text/plain'});
+            const blob = new Blob([contenido], { type: 'text/plain' });
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
             link.download = `historial_${getFormattedDate()}.txt`;
@@ -83,9 +83,9 @@
         function exportarHistorialPDF() {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
-            
+
             const contenido = document.getElementById('resumenFinal').innerText;
-            
+
             doc.setFontSize(12);
             doc.text(contenido, 10, 10);
             doc.save(`historial_${getFormattedDate()}.pdf`);
@@ -101,9 +101,9 @@
                 return `
                     <div class="peluquero">
                         <button class="btn btn-danger" 
-                                onclick="eliminarPeluquero(${index})"
-                                style="position: absolute; top: 15px; right: 15px">
-                            <i class="fas fa-trash"></i>
+                            onclick="eliminarPeluquero(${index})"
+                            style="position: absolute; top: 15px; right: 15px; padding: 5px 8px;">
+                            <img src="fotosIndex/eliminar.ico" alt="Eliminar" style="width: 20px; height: 20px;">
                         </button>
                         <h3>${peluquero.nombre}</h3>
                         
@@ -118,26 +118,26 @@
                                 <i class="fas fa-paint-brush"></i> Color ($${precios.color})
                             </button>
                         </div>
-                        
+
                         <div class="totales">
                             <div class="contador-servicio">
-                                <span>Cortes: ${peluquero.servicios.corte}</span>
-                                <button class="btn-eliminar-servicio" onclick="eliminarServicio(${index}, 'corte')">
-                                    <i class="fas fa-minus-circle"></i>
-                                </button>
-                            </div>
-                            <div class="contador-servicio">
-                                <span>Barbas: ${peluquero.servicios.barba}</span>
-                                <button class="btn-eliminar-servicio" onclick="eliminarServicio(${index}, 'barba')">
-                                    <i class="fas fa-minus-circle"></i>
-                                </button>
-                            </div>
-                            <div class="contador-servicio">
-                                <span>Colores: ${peluquero.servicios.color}</span>
-                                <button class="btn-eliminar-servicio" onclick="eliminarServicio(${index}, 'color')">
-                                    <i class="fas fa-minus-circle"></i>
-                                </button>
-                            </div>
+                            <span>Cortes: ${peluquero.servicios.corte}</span>
+                            <button class="btn-eliminar-servicio" onclick="eliminarServicio(${index}, 'corte')">
+                                <img src="fotosIndex/menos.ico" alt="-" style="vertical-align: middle;">
+                            </button>
+                        </div>
+                        <div class="contador-servicio">
+                            <span>Barbas: ${peluquero.servicios.barba}</span>
+                            <button class="btn-eliminar-servicio" onclick="eliminarServicio(${index}, 'barba')">
+                                <img src="fotosIndex/menos.ico" alt="-" style="vertical-align: middle;">
+                            </button>
+                        </div>
+                        <div class="contador-servicio">
+                            <span>Colores: ${peluquero.servicios.color}</span>
+                            <button class="btn-eliminar-servicio" onclick="eliminarServicio(${index}, 'color')">
+                                <img src="fotosIndex/menos.ico" alt="-" style="vertical-align: middle;">
+                            </button>
+                        </div>
                             <hr>
                             <p><span>Total:</span> <strong>$${total}</strong></p>
                             <p><span>Ganancia peluquero:</span> <strong>$${gananciaPeluquero.toFixed(2)}</strong></p>
@@ -156,11 +156,11 @@
             let htmlResumen = `
                 <h2><i class="fas fa-file-invoice-dollar"></i> Resumen Diario</h2>
                 ${peluqueros.map(p => {
-                    const total = calcularTotal(p.servicios);
-                    const tienda = total * 0.20;
-                    totalGeneral += total;
-                    totalTienda += tienda;
-                    return `
+                const total = calcularTotal(p.servicios);
+                const tienda = total * 0.20;
+                totalGeneral += total;
+                totalTienda += tienda;
+                return `
                         <p>
                             <strong>${p.nombre}</strong>
                             <span style="float: right">
@@ -169,14 +169,11 @@
                             </span>
                         </p>
                     `;
-                }).join('')}
+            }).join('')}
                 <hr>
                 <div class="export-buttons">
                     <button onclick="exportarHistorialTXT()" class="btn btn-primary">
                         <i class="fas fa-file-alt"></i> Guardar como TXT
-                    </button>
-                    <button onclick="exportarHistorialPDF()" class="btn btn-danger">
-                        <i class="fas fa-file-pdf"></i> Guardar como PDF
                     </button>
                 </div>
                 <p><strong>Total General:</strong> <span style="float: right">$${totalGeneral}</span></p>

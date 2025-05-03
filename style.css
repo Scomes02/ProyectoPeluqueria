@@ -155,6 +155,18 @@ input[type="text"]:focus {
     font-weight: bold;
 }
 
+.btn-eliminar-servicio img {
+    transition: transform 0.2s ease;
+}
+
+.btn-eliminar-servicio:hover img {
+    transform: scale(1.1);
+}
+
+.btn-danger:hover img {
+    filter: brightness(0.8);
+}
+
 @media (max-width: 768px) {
     .controls {
         flex-direction: column;
@@ -164,4 +176,35 @@ input[type="text"]:focus {
         width: 100%;
         min-width: auto;
     }
+}
+.btn-danger {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 34px; /* Ajustar según necesidad */
+}
+
+.contador-servicio {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 30px; /* Altura mínima para uniformidad */
+}
+
+.btn-eliminar-servicio {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: auto; /* Alinea a la derecha */
+}
+
+/* Ajustar tamaños de imágenes */
+.btn-danger img {
+    width: 20px;
+    height: 20px;
+}
+
+.btn-eliminar-servicio img {
+    width: 16px;
+    height: 16px;
 }
