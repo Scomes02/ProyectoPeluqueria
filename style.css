@@ -1,19 +1,167 @@
-/* style.css */
+:root {
+    --primary: #2A3F5F;
+    --secondary: #4CAF50;
+    --accent: #FF6B6B;
+    --text: #333;
+    --background: #f8f9fa;
+}
+
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f9;
+    font-family: 'Segoe UI', system-ui, sans-serif;
     margin: 0;
-    padding: 0;
+    padding: 25px;
+    background: var(--background);
+    color: var(--text);
+    line-height: 1.6;
 }
 
-header {
-    background-color: #333;
+.controls {
+    margin-bottom: 30px;
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+input[type="text"] {
+    padding: 12px 15px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    flex: 1;
+    min-width: 250px;
+    transition: border-color 0.3s ease;
+}
+
+input[type="text"]:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(42, 63, 95, 0.1);
+}
+
+.btn {
+    padding: 12px 25px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+
+.btn-primary {
+    background: var(--primary);
     color: white;
-    padding: 20px 0;
-    text-align: center;
 }
 
-header h1 {
-    margin: 0;
-    font-size: 2em;
+.btn-success {
+    background: var(--secondary);
+    color: white;
+}
+
+.btn-danger {
+    background: var(--accent);
+    color: white;
+}
+
+.peluqueros {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 25px;
+    margin-top: 20px;
+}
+
+.peluquero {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    position: relative;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease;
+}
+
+.peluquero:hover {
+    transform: translateY(-3px);
+}
+
+.peluquero h3 {
+    margin: 0 0 15px 0;
+    color: var(--primary);
+    font-size: 1.4em;
+}
+
+.servicios-container {
+    display: grid;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.btn-servicio {
+    padding: 10px 15px;
+    border-radius: 6px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-servicio.corte { background: #FFD700; color: #333; }
+.btn-servicio.barba { background: #A1887F; color: white; }
+.btn-servicio.color { background: #BA68C8; color: white; }
+
+.totales {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 15px;
+    border: 1px solid #eee;
+}
+
+.totales p {
+    margin: 8px 0;
+    display: flex;
+    justify-content: space-between;
+}
+
+#resumenFinal {
+    background: white;
+    padding: 25px;
+    margin-top: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+#resumenFinal h2 {
+    color: var(--primary);
+    margin-top: 0;
+}
+
+.badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.8em;
+    font-weight: bold;
+}
+
+@media (max-width: 768px) {
+    .controls {
+        flex-direction: column;
+    }
+    
+    input[type="text"] {
+        width: 100%;
+        min-width: auto;
+    }
 }

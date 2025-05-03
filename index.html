@@ -4,12 +4,192 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="fotos index/Proyecto nuevo.ico">
+    <link rel="icon" href="fotosIndex/icono.ico">
     <title>Peluqueria</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-    <header>
-        <h1>Peluqueria</h1>
-    </header>    
+    <div class="controls">
+        <input type="text" id="nombrePeluquero" placeholder="Nombre del peluquero" aria-label="Nombre del peluquero">
+        <button onclick="agregarPeluquero()" class="btn btn-primary">
+            <i class="fas fa-user-plus"></i> Agregar
+        </button>
+        <button onclick="finalizarDia()" class="btn btn-success">
+            <i class="fas fa-calendar-check"></i> Finalizar Día
+        </button>
+    </div>
+
+    <div class="peluqueros" id="contenedorPeluqueros"></div>
+
+    <div id="resumenFinal"></div>
+
+    <script>
+        const precios = { corte: 1500, barba: 1000, color: 2000 };
+        let peluqueros = [];
+
+        function agregarPeluquero() {
+            const nombre = document.getElementById("nombrePeluquero").value.trim();
+            if (!nombre) return alert("Ingrese un nombre válido");
+
+            const nuevoPeluquero = {
+                nombre,
+                servicios: { corte: 0, barba: 0, color: 0 }
+            };
+            peluqueros.push(nuevoPeluquero);
+            document.getElementById("nombrePeluquero").value = "";
+            renderPeluqueros();
+        }
+
+        function eliminarPeluquero(index) {
+            if (confirm("¿Eliminar este peluquero?")) {
+                peluqueros.splice(index, 1);
+                renderPeluqueros();
+            }
+        }
+
+        function agregarServicio(index, tipo) {
+            peluqueros[index].servicios[tipo]++;
+            renderPeluqueros();
+        }
+
+        function eliminarServicio(index, tipo) {
+            if (peluqueros[index].servicios[tipo] > 0) {
+                peluqueros[index].servicios[tipo]--;
+                renderPeluqueros();
+            }
+        }
+
+        function calcularTotal(servicios) {
+            return Object.entries(servicios).reduce((acc, [tipo, cantidad]) => {
+                return acc + (cantidad * precios[tipo]);
+            }, 0);
+        }
+
+        function getFormattedDate() {
+            const d = new Date();
+            return `${d.getDate().toString().padStart(2, '0')}-${(d.getMonth()+1).toString().padStart(2, '0')}-${d.getFullYear()}`;
+        }
+
+        function exportarHistorialTXT() {
+            const contenido = document.getElementById('resumenFinal').innerText;
+            const blob = new Blob([contenido], {type: 'text/plain'});
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `historial_${getFormattedDate()}.txt`;
+            link.click();
+        }
+
+        function exportarHistorialPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            const contenido = document.getElementById('resumenFinal').innerText;
+            
+            doc.setFontSize(12);
+            doc.text(contenido, 10, 10);
+            doc.save(`historial_${getFormattedDate()}.pdf`);
+        }
+
+        function renderPeluqueros() {
+            const contenedor = document.getElementById("contenedorPeluqueros");
+            contenedor.innerHTML = peluqueros.map((peluquero, index) => {
+                const total = calcularTotal(peluquero.servicios);
+                const tienda = total * 0.20;
+                const gananciaPeluquero = total - tienda;
+
+                return `
+                    <div class="peluquero">
+                        <button class="btn btn-danger" 
+                                onclick="eliminarPeluquero(${index})"
+                                style="position: absolute; top: 15px; right: 15px">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                        <h3>${peluquero.nombre}</h3>
+                        
+                        <div class="servicios-container">
+                            <button class="btn-servicio corte" onclick="agregarServicio(${index}, 'corte')">
+                                <i class="fas fa-scissors"></i> Corte ($${precios.corte})
+                            </button>
+                            <button class="btn-servicio barba" onclick="agregarServicio(${index}, 'barba')">
+                                <i class="fas fa-air-freshener"></i> Barba ($${precios.barba})
+                            </button>
+                            <button class="btn-servicio color" onclick="agregarServicio(${index}, 'color')">
+                                <i class="fas fa-paint-brush"></i> Color ($${precios.color})
+                            </button>
+                        </div>
+                        
+                        <div class="totales">
+                            <div class="contador-servicio">
+                                <span>Cortes: ${peluquero.servicios.corte}</span>
+                                <button class="btn-eliminar-servicio" onclick="eliminarServicio(${index}, 'corte')">
+                                    <i class="fas fa-minus-circle"></i>
+                                </button>
+                            </div>
+                            <div class="contador-servicio">
+                                <span>Barbas: ${peluquero.servicios.barba}</span>
+                                <button class="btn-eliminar-servicio" onclick="eliminarServicio(${index}, 'barba')">
+                                    <i class="fas fa-minus-circle"></i>
+                                </button>
+                            </div>
+                            <div class="contador-servicio">
+                                <span>Colores: ${peluquero.servicios.color}</span>
+                                <button class="btn-eliminar-servicio" onclick="eliminarServicio(${index}, 'color')">
+                                    <i class="fas fa-minus-circle"></i>
+                                </button>
+                            </div>
+                            <hr>
+                            <p><span>Total:</span> <strong>$${total}</strong></p>
+                            <p><span>Ganancia peluquero:</span> <strong>$${gananciaPeluquero.toFixed(2)}</strong></p>
+                            <p><span>Tienda:</span> <strong class="badge" style="background: ${tienda > 0 ? '#4CAF50' : '#FF6B6B'}">$${tienda.toFixed(2)}</strong></p>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function finalizarDia() {
+            if (!peluqueros.length) return alert("No hay datos para resumir");
+
+            let totalGeneral = 0;
+            let totalTienda = 0;
+            let htmlResumen = `
+                <h2><i class="fas fa-file-invoice-dollar"></i> Resumen Diario</h2>
+                ${peluqueros.map(p => {
+                    const total = calcularTotal(p.servicios);
+                    const tienda = total * 0.20;
+                    totalGeneral += total;
+                    totalTienda += tienda;
+                    return `
+                        <p>
+                            <strong>${p.nombre}</strong>
+                            <span style="float: right">
+                                Total: $${total} 
+                                <small>(Tienda: $${tienda.toFixed(2)})</small>
+                            </span>
+                        </p>
+                    `;
+                }).join('')}
+                <hr>
+                <div class="export-buttons">
+                    <button onclick="exportarHistorialTXT()" class="btn btn-primary">
+                        <i class="fas fa-file-alt"></i> Guardar como TXT
+                    </button>
+                    <button onclick="exportarHistorialPDF()" class="btn btn-danger">
+                        <i class="fas fa-file-pdf"></i> Guardar como PDF
+                    </button>
+                </div>
+                <p><strong>Total General:</strong> <span style="float: right">$${totalGeneral}</span></p>
+                <p><strong>Ganancia Tienda Total:</strong> <span style="float: right" class="badge" style="background: #4CAF50">$${totalTienda.toFixed(2)}</span></p>
+            `;
+
+            if (confirm("¿Finalizar día y reiniciar?")) {
+                document.getElementById("resumenFinal").innerHTML = htmlResumen;
+                peluqueros = [];
+                renderPeluqueros();
+            }
+        }
+    </script>
 </body>
+
+</html>
