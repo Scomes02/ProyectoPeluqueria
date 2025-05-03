@@ -6,12 +6,10 @@ Proyecto de una peluquería:
 
 ### Tecnologías usadas
 - HTML/CSS
-- MySQL
 
 ### Cómo ejecutar el proyecto
 1. Clonar el repositorio
-2. Importar la base de datos desde `/database`
-3. Ejecutar en servidor local (XAMPP, etc.)
+2. Importar la carpeta en visual y ejecutar
 
 ### Autor
 Santiago Comes – [GitHub](https://github.com/Scomes02)
