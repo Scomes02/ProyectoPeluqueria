@@ -10,19 +10,25 @@
 </head>
 
 <body>
-    <div class="controls">
-        <input type="text" id="nombrePeluquero" placeholder="Nombre del peluquero" aria-label="Nombre del peluquero">
-        <button onclick="agregarPeluquero()" class="btn btn-primary">
-            <i class="fas fa-user-plus"></i> Agregar
-        </button>
-        <button onclick="finalizarDia()" class="btn btn-success">
-            <i class="fas fa-calendar-check"></i> Finalizar Día
-        </button>
-    </div>
+    <main>
+        <section class="controls">
+            <label for="nombrePeluquero" class="sr-only">Nombre del peluquero</label>
+            <input type="text" id="nombrePeluquero" placeholder="Nombre del peluquero"
+                aria-label="Nombre del peluquero" />
 
-    <div class="peluqueros" id="contenedorPeluqueros"></div>
+            <button onclick="agregarPeluquero()" class="btn btn-primary" aria-label="Agregar peluquero">
+                <i class="fas fa-user-plus"></i> Agregar
+            </button>
+            <button onclick="finalizarDia()" class="btn btn-success" aria-label="Finalizar día">
+                <i class="fas fa-calendar-check"></i> Finalizar Día
+            </button>
+            <button id="toggle-tema">🌙 Modo Oscuro</button>
+        </section>
 
-    <div id="resumenFinal"></div>
+        <section class="peluqueros" id="contenedorPeluqueros"></section>
+
+        <section id="resumenFinal"></section>
+    </main>
 
     <script>
         const precios = { corte: 1500, barba: 1000, color: 2000 };
@@ -100,12 +106,13 @@
 
                 return `
                     <div class="peluquero">
+                        <img src="fotosIndex/desk-chair_96892.png" alt="Silla de peluquero" class="silla-peluquero" />
+                        <h3 class="nombre-peluquero">${peluquero.nombre}</h3>
                         <button class="btn btn-danger" 
                             onclick="eliminarPeluquero(${index})"
                             style="position: absolute; top: 15px; right: 15px; padding: 5px 8px;">
                             <img src="fotosIndex/eliminar.ico" alt="Eliminar" style="width: 20px; height: 20px;">
                         </button>
-                        <h3>${peluquero.nombre}</h3>
                         
                         <div class="servicios-container">
                             <button class="btn-servicio corte" onclick="agregarServicio(${index}, 'corte')">
@@ -186,6 +193,20 @@
                 renderPeluqueros();
             }
         }
+        const toggleBtn = document.getElementById("toggle-tema");
+
+        toggleBtn.addEventListener("click", () => {
+            document.body.classList.toggle("modo-oscuro");
+
+            // Cambiar ícono o texto según el modo
+            if (document.body.classList.contains("modo-oscuro")) {
+                toggleBtn.textContent = "☀️ Modo Claro";
+            } else {
+                toggleBtn.textContent = "🌙 Modo Oscuro";
+            }
+        });
+
+
     </script>
 </body>
 
