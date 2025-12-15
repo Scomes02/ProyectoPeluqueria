@@ -1,213 +1,117 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="fotosIndex/icono.ico">
-    <title>Peluqueria</title>
+    <title>Sistema de Gestión - Peluquería</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
+
+    <header>
+        <div class="logo-area">
+            <h1>✂️ Gestión Peluquería</h1>
+        </div>
+        <div class="user-controls">
+            <select id="roleSelector" onchange="cambiarRol()">
+                <option value="admin">👨‍💼 Modo Encargado</option>
+                <option value="staff">✂️ Modo Peluquero</option>
+            </select>
+            <button id="toggle-tema" class="btn-icon" title="Cambiar Tema">🌙</button>
+        </div>
+    </header>
+
+    <nav class="main-nav admin-only">
+        <button onclick="mostrarSeccion('dashboard')" class="nav-btn active">Tablero Diario</button>
+        <button onclick="mostrarSeccion('historial')" class="nav-btn">📜 Historial</button>
+        <button onclick="mostrarSeccion('config')" class="nav-btn">⚙️ Configuración</button>
+    </nav>
+
     <main>
-        <section class="controls">
-            <label for="nombrePeluquero" class="sr-only">Nombre del peluquero</label>
-            <input type="text" id="nombrePeluquero" placeholder="Nombre del peluquero"
-                aria-label="Nombre del peluquero" />
-
-            <button onclick="agregarPeluquero()" class="btn btn-primary" aria-label="Agregar peluquero">
-                <i class="fas fa-user-plus"></i> Agregar
-            </button>
-            <button onclick="finalizarDia()" class="btn btn-success" aria-label="Finalizar día">
-                <i class="fas fa-calendar-check"></i> Finalizar Día
-            </button>
-            <button id="toggle-tema">🌙 Modo Oscuro</button>
-        </section>
-
-        <section class="peluqueros" id="contenedorPeluqueros"></section>
-
-        <section id="resumenFinal"></section>
-    </main>
-
-    <script>
-        const precios = { corte: 1500, barba: 1000, color: 2000 };
-        let peluqueros = [];
-
-        function agregarPeluquero() {
-            const nombre = document.getElementById("nombrePeluquero").value.trim();
-            if (!nombre) return alert("Ingrese un nombre válido");
-
-            const nuevoPeluquero = {
-                nombre,
-                servicios: { corte: 0, barba: 0, color: 0 }
-            };
-            peluqueros.push(nuevoPeluquero);
-            document.getElementById("nombrePeluquero").value = "";
-            renderPeluqueros();
-        }
-
-        function eliminarPeluquero(index) {
-            if (confirm("¿Eliminar este peluquero?")) {
-                peluqueros.splice(index, 1);
-                renderPeluqueros();
-            }
-        }
-
-        function agregarServicio(index, tipo) {
-            peluqueros[index].servicios[tipo]++;
-            renderPeluqueros();
-        }
-
-        function eliminarServicio(index, tipo) {
-            if (peluqueros[index].servicios[tipo] > 0) {
-                peluqueros[index].servicios[tipo]--;
-                renderPeluqueros();
-            }
-        }
-
-        function calcularTotal(servicios) {
-            return Object.entries(servicios).reduce((acc, [tipo, cantidad]) => {
-                return acc + (cantidad * precios[tipo]);
-            }, 0);
-        }
-
-        function getFormattedDate() {
-            const d = new Date();
-            return `${d.getDate().toString().padStart(2, '0')}-${(d.getMonth() + 1).toString().padStart(2, '0')}-${d.getFullYear()}`;
-        }
-
-        function exportarHistorialTXT() {
-            const contenido = document.getElementById('resumenFinal').innerText;
-            const blob = new Blob([contenido], { type: 'text/plain' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = `historial_${getFormattedDate()}.txt`;
-            link.click();
-        }
-
-        function exportarHistorialPDF() {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-
-            const contenido = document.getElementById('resumenFinal').innerText;
-
-            doc.setFontSize(12);
-            doc.text(contenido, 10, 10);
-            doc.save(`historial_${getFormattedDate()}.pdf`);
-        }
-
-        function renderPeluqueros() {
-            const contenedor = document.getElementById("contenedorPeluqueros");
-            contenedor.innerHTML = peluqueros.map((peluquero, index) => {
-                const total = calcularTotal(peluquero.servicios);
-                const tienda = total * 0.20;
-                const gananciaPeluquero = total - tienda;
-
-                return `
-                    <div class="peluquero">
-                        <img src="fotosIndex/desk-chair_96892.png" alt="Silla de peluquero" class="silla-peluquero" />
-                        <h3 class="nombre-peluquero">${peluquero.nombre}</h3>
-                        <button class="btn btn-danger" 
-                            onclick="eliminarPeluquero(${index})"
-                            style="position: absolute; top: 15px; right: 15px; padding: 5px 8px;">
-                            <img src="fotosIndex/eliminar.ico" alt="Eliminar" style="width: 20px; height: 20px;">
-                        </button>
-                        
-                        <div class="servicios-container">
-                            <button class="btn-servicio corte" onclick="agregarServicio(${index}, 'corte')">
-                                <i class="fas fa-scissors"></i> Corte ($${precios.corte})
-                            </button>
-                            <button class="btn-servicio barba" onclick="agregarServicio(${index}, 'barba')">
-                                <i class="fas fa-air-freshener"></i> Barba ($${precios.barba})
-                            </button>
-                            <button class="btn-servicio color" onclick="agregarServicio(${index}, 'color')">
-                                <i class="fas fa-paint-brush"></i> Color ($${precios.color})
-                            </button>
-                        </div>
-
-                        <div class="totales">
-                            <div class="contador-servicio">
-                            <span>Cortes: ${peluquero.servicios.corte}</span>
-                            <button class="btn-eliminar-servicio" onclick="eliminarServicio(${index}, 'corte')">
-                                <img src="fotosIndex/menos.ico" alt="-" style="vertical-align: middle;">
-                            </button>
-                        </div>
-                        <div class="contador-servicio">
-                            <span>Barbas: ${peluquero.servicios.barba}</span>
-                            <button class="btn-eliminar-servicio" onclick="eliminarServicio(${index}, 'barba')">
-                                <img src="fotosIndex/menos.ico" alt="-" style="vertical-align: middle;">
-                            </button>
-                        </div>
-                        <div class="contador-servicio">
-                            <span>Colores: ${peluquero.servicios.color}</span>
-                            <button class="btn-eliminar-servicio" onclick="eliminarServicio(${index}, 'color')">
-                                <img src="fotosIndex/menos.ico" alt="-" style="vertical-align: middle;">
-                            </button>
-                        </div>
-                            <hr>
-                            <p><span>Total:</span> <strong>$${total}</strong></p>
-                            <p><span>Ganancia peluquero:</span> <strong>$${gananciaPeluquero.toFixed(2)}</strong></p>
-                            <p><span>Tienda:</span> <strong class="badge" style="background: ${tienda > 0 ? '#4CAF50' : '#FF6B6B'}">$${tienda.toFixed(2)}</strong></p>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function finalizarDia() {
-            if (!peluqueros.length) return alert("No hay datos para resumir");
-
-            let totalGeneral = 0;
-            let totalTienda = 0;
-            let htmlResumen = `
-                <h2><i class="fas fa-file-invoice-dollar"></i> Resumen Diario</h2>
-                ${peluqueros.map(p => {
-                const total = calcularTotal(p.servicios);
-                const tienda = total * 0.20;
-                totalGeneral += total;
-                totalTienda += tienda;
-                return `
-                        <p>
-                            <strong>${p.nombre}</strong>
-                            <span style="float: right">
-                                Total: $${total} 
-                                <small>(Tienda: $${tienda.toFixed(2)})</small>
-                            </span>
-                        </p>
-                    `;
-            }).join('')}
-                <hr>
-                <div class="export-buttons">
-                    <button onclick="exportarHistorialTXT()" class="btn btn-primary">
-                        <i class="fas fa-file-alt"></i> Guardar como TXT
+        <section id="dashboard" class="vista active">
+            
+            <div class="controls admin-only-block">
+                <div class="input-group">
+                    <input type="text" id="nombrePeluquero" placeholder="Nombre nuevo profesional" />
+                    <button onclick="agregarPeluquero()" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Agregar
                     </button>
                 </div>
-                <p><strong>Total General:</strong> <span style="float: right">$${totalGeneral}</span></p>
-                <p><strong>Ganancia Tienda Total:</strong> <span style="float: right" class="badge" style="background: #4CAF50">$${totalTienda.toFixed(2)}</span></p>
-            `;
+                <div class="actions-group">
+                    <button onclick="finalizarDia()" class="btn btn-success">
+                        <i class="fas fa-check-double"></i> Cerrar Caja y Guardar Día
+                    </button>
+                </div>
+            </div>
 
-            if (confirm("¿Finalizar día y reiniciar?")) {
-                document.getElementById("resumenFinal").innerHTML = htmlResumen;
-                peluqueros = [];
-                renderPeluqueros();
-            }
-        }
-        const toggleBtn = document.getElementById("toggle-tema");
+            <div id="contenedorPeluqueros" class="peluqueros-grid">
+                </div>
 
-        toggleBtn.addEventListener("click", () => {
-            document.body.classList.toggle("modo-oscuro");
+            <div class="live-stats">
+                <h3>Resumen del Día (En curso)</h3>
+                <div class="stats-row">
+                    <div class="stat-card">
+                        <span>Total Bruto</span>
+                        <strong id="liveTotal">$0</strong>
+                    </div>
+                    <div class="stat-card">
+                        <span>Ganancia Tienda</span>
+                        <strong id="liveTienda">$0</strong>
+                    </div>
+                    <div class="stat-card">
+                        <span>A Pagar Peluqueros</span>
+                        <strong id="livePeluqueros">$0</strong>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-            // Cambiar ícono o texto según el modo
-            if (document.body.classList.contains("modo-oscuro")) {
-                toggleBtn.textContent = "☀️ Modo Claro";
-            } else {
-                toggleBtn.textContent = "🌙 Modo Oscuro";
-            }
-        });
+        <section id="historial" class="vista">
+            <div class="header-section">
+                <h2>Historial de Cierres</h2>
+                <button onclick="exportarHistorialCompleto()" class="btn btn-secondary"><i class="fas fa-download"></i> Exportar Todo</button>
+            </div>
+            <div class="table-container">
+                <table id="tablaHistorial">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Total Facturado</th>
+                            <th>Ganancia Tienda</th>
+                            <th>Detalles</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </section>
 
+        <section id="config" class="vista">
+            <h2>Configuración del Sistema</h2>
+            
+            <div class="config-block">
+                <h3>Servicios y Precios</h3>
+                <div class="add-service-form">
+                    <input type="text" id="nuevoServicioNombre" placeholder="Nombre (ej: Corte Niño)">
+                    <input type="number" id="nuevoServicioPrecio" placeholder="Precio">
+                    <button onclick="crearServicioNuevo()" class="btn btn-primary">Crear</button>
+                </div>
+                <ul id="listaServiciosConfig" class="config-list">
+                    </ul>
+            </div>
 
-    </script>
+            <div class="config-block">
+                <h3>Porcentaje de la Tienda</h3>
+                <div class="input-group">
+                    <label>Porcentaje (%): </label>
+                    <input type="number" id="configPorcentaje" value="20" onchange="guardarConfiguracion()">
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
 </body>
-
 </html>
