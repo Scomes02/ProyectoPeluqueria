@@ -1,4 +1,4 @@
-# 💇‍♂️ Proyecto Peluquería PRO
+# 💇‍♂️ Proyecto Peluquería
 
 ![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
 ![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
@@ -40,3 +40,26 @@ Debido a que el proyecto utiliza un backend en PHP y una base de datos, requiere
 1. **Clonar el repositorio:**
    ```bash
    git clone [https://github.com/Scomes02/ProyectoPeluqueria.git](https://github.com/Scomes02/ProyectoPeluqueria.git)
+   
+2. **Mover al servidor local:**
+Colocar la carpeta del proyecto dentro del directorio público de tu servidor local (por ejemplo, la carpeta htdocs si usas XAMPP o www en WAMP).
+
+3. **Configurar la Base de Datos:**
+
+   -Abrir tu gestor de base de datos (ej. DBeaver o phpMyAdmin).
+
+   -Crear una base de datos llamada peluqueria_db.
+
+   -Ejecutar el script SQL incluido en el proyecto para crear las tablas y datos iniciales.
+
+4. **Conexión (Opcional):**
+Si tu servidor local tiene una contraseña específica para MySQL, actualiza las credenciales en el archivo api/conexion.php.
+
+5. **Ejecutar:**
+Abrir el navegador y acceder a:
+http://localhost/ProyectoPeluqueria/login.php
+
+👤 Autor
+Santiago Comes
+
+GitHub: @Scomes02
